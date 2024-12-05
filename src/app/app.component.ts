@@ -17,6 +17,7 @@ export class AppComponent {
   ng_death = 0;
   ng_preAttack = 0;
   ng_attack = 0;
+  css_hit = false;
 
   constructor() {
   }
@@ -44,6 +45,8 @@ export class AppComponent {
 
   hit(){
     // TODO Utilisé Animista pour faire une animation différente avec css (wobble)
+    this.css_hit = true;
+    setTimeout(() => {this.css_hit = false}, 0.5 * 1000);
   }
 
   showSlime(){
