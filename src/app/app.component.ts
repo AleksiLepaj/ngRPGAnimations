@@ -2,21 +2,33 @@ import { Component } from '@angular/core';
 import {transition, trigger, useAnimation} from "@angular/animations";
 import {shakeX, pulse, jello} from "ng-animate";
 
+const SPAWN_DURATION_MS = 500;
+
+const DEATH_DURATION_SECONDS = 0.5;
+const PREATTACK_JELLO_DURATION_SECONDS = 0.5;
+const ATTACK_PULSE_DURATION_SECONDS = 0.3;
+const HIT_WOBBLE_DURATION_SECONDS = 0.3;
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   animations: [
-    trigger('death', [transition(':increment', useAnimation(shakeX, {params: {timing: 0.5}}))]),
-    trigger('attack', [transition(':increment', useAnimation(pulse, {params: {timing: 0.3, scale: 4.5}}))]),
-    trigger('preAttack', [transition(':increment', useAnimation(jello, {params: {timing: 0.5}}))]),
+    trigger('death', [transition(':increment', useAnimation(shakeX, {params: {timing: DEATH_DURATION_SECONDS}}))]),
+    trigger('attack', [transition(':increment', useAnimation(pulse, {params: {timing: ATTACK_PULSE_DURATION_SECONDS, scale: 4.5}}))]),
+    trigger('preAttack', [transition(':increment', useAnimation(jello, {params: {timing: PREATTACK_JELLO_DURATION_SECONDS}}))]),
 ]
 })
 export class AppComponent {
   slimeIsPresent = false;
+  cantInteractWithSlime = false;
+
   ng_death = 0;
   ng_preAttack = 0;
   ng_attack = 0;
+
+
+
   css_hit = false;
 
   constructor() {
@@ -46,7 +58,7 @@ export class AppComponent {
   hit(){
     // TODO Utilisé Animista pour faire une animation différente avec css (wobble)
     this.css_hit = true;
-    setTimeout(() => {this.css_hit = false}, 0.5 * 1000);
+    setTimeout(() => {this.css_hit = false}, HIT_WOBBLE_DURATION_SECONDS * 1000);
   }
 
   showSlime(){
