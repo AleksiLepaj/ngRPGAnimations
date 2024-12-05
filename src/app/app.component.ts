@@ -42,6 +42,9 @@ export class AppComponent {
 
   css_hit = false;
 
+  css_rotateCenter = false;
+  css_rotateTop = false
+
   constructor() {
   }
 
@@ -90,6 +93,26 @@ export class AppComponent {
     this.ng_shake++;
     await lastValueFrom(timer(SHAKE_DURATION_SECONDS * 1000));
     this.ng_flip++;
+  }
+
+  infiniteTripleSpin() {
+    this.doubleCenterSpin();
+  }
+
+  doubleCenterSpin() {
+    this.css_rotateCenter = true;
+    setTimeout(() => {
+      this.css_rotateCenter = false;
+      this.topSpin();
+    }, ROTATE_CENTER_DURATION_SECONDS * 2 * 1000)
+  }
+
+  topSpin() {
+    this.css_rotateTop = true;
+    setTimeout(() => {
+      this.css_rotateTop = false;
+      this.doubleCenterSpin();
+    }, ROTATE_TOP_DURATION_SECONDS * 1000)
   }
 
 
