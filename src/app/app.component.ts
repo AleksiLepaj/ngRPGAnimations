@@ -1,13 +1,19 @@
 import { Component } from '@angular/core';
 import {transition, trigger, useAnimation} from "@angular/animations";
-import {shakeX, pulse, jello} from "ng-animate";
+import {shakeX, pulse, jello, bounce, flip} from "ng-animate";
+import { lastValueFrom, timer } from 'rxjs';
 
 const SPAWN_DURATION_MS = 500;
-
 const DEATH_DURATION_SECONDS = 0.5;
 const PREATTACK_JELLO_DURATION_SECONDS = 0.5;
 const ATTACK_PULSE_DURATION_SECONDS = 0.3;
 const HIT_WOBBLE_DURATION_SECONDS = 0.3;
+
+const BOUNCE_DURATION_SECONDS = 1.0;
+const SHAKE_DURATION_SECONDS = 0.75;
+const FLIP_DURATION_SECONDS = 0.5;
+const ROTATE_CENTER_DURATION_SECONDS = 0.8;
+const ROTATE_TOP_DURATION_SECONDS = 0.7;
 
 @Component({
   selector: 'app-root',
@@ -17,6 +23,9 @@ const HIT_WOBBLE_DURATION_SECONDS = 0.3;
     trigger('death', [transition(':increment', useAnimation(shakeX, {params: {timing: DEATH_DURATION_SECONDS}}))]),
     trigger('attack', [transition(':increment', useAnimation(pulse, {params: {timing: ATTACK_PULSE_DURATION_SECONDS, scale: 4.5}}))]),
     trigger('preAttack', [transition(':increment', useAnimation(jello, {params: {timing: PREATTACK_JELLO_DURATION_SECONDS}}))]),
+    trigger('bounce', [transition(':increment', useAnimation(bounce, {params: {timing: BOUNCE_DURATION_SECONDS}}))]),
+    trigger('shake', [transition(':increment', useAnimation(shakeX, {params: {timing: SHAKE_DURATION_SECONDS}}))]),
+    trigger('flip', [transition(':increment', useAnimation(flip, {params: {timing: FLIP_DURATION_SECONDS}}))]),
 ]
 })
 export class AppComponent {
@@ -27,11 +36,25 @@ export class AppComponent {
   ng_preAttack = 0;
   ng_attack = 0;
 
-
+  ng_bounce = 0;
+  ng_shake = 0;
+  ng_flip = 0;
 
   css_hit = false;
 
   constructor() {
+  }
+
+  showSlime(){
+    var element = document.getElementById("slimeyId");
+    element?.classList.remove("fadeOut");
+    element?.classList.add("fadeIn");
+  }
+
+  hideSlime(){
+    var element = document.getElementById("slimeyId");
+    element?.classList.remove("fadeIn");
+    element?.classList.add("fadeOut");
   }
 
   spawn() {
@@ -61,15 +84,13 @@ export class AppComponent {
     setTimeout(() => {this.css_hit = false}, HIT_WOBBLE_DURATION_SECONDS * 1000);
   }
 
-  showSlime(){
-    var element = document.getElementById("slimeyId");
-    element?.classList.remove("fadeOut");
-    element?.classList.add("fadeIn");
+  async bounceShakeFlip() {
+    this.ng_bounce++;
+    await lastValueFrom(timer(BOUNCE_DURATION_SECONDS * 1000));
+    this.ng_shake++;
+    await lastValueFrom(timer(SHAKE_DURATION_SECONDS * 1000));
+    this.ng_flip++;
   }
 
-  hideSlime(){
-    var element = document.getElementById("slimeyId");
-    element?.classList.remove("fadeIn");
-    element?.classList.add("fadeOut");
-  }
+
 }
